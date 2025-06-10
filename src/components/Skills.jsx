@@ -7,35 +7,6 @@ export const Skills = () => {
   const [sortedLanguageList, fetchRequestState, converseCountToPercentage] = useSkills();
 
 
-  useEffect(() => {
-    dispatch({ type: actionTypes.fetch });
-    axios.get('https://api.github.com/users/USER_NAME/repos')
-      .then((response) => {
-        const languageList = response.data.map(res => res.language);
-        const countedLanguageList = generateLanguageCountObj(languageList);
-        dispatch({ type: actionTypes.success, payload: { languageList: countedLanguageList } });
-      })
-      .catch(() => {
-        dispatch({ type: actionTypes.error });
-      });
-  }, []);
-
-  const generateLanguageCountObj = (allLanguageList) => {
-    const notNullLanguageList = allLanguageList.filter(language => language != null);
-    const uniqueLanguageList = [...new Set(notNullLanguageList)];
-
-    return uniqueLanguageList.map(item => {
-      return {
-        language: item,
-        count: allLanguageList.filter(language => language === item).length
-      }
-    });
-  };
-
-  const convertCountToPercentage = (count) => {
-    if (count > 10) { return 100; }
-    return count * 10;
-  };
 
   return (
     <div id="skills">
@@ -54,7 +25,7 @@ export const Skills = () => {
               sortedLanguageList().map((item, index) => (
                 <div className="skill-item" key={index}>
                   <p className="description"><strong>{item.language}</strong></p>
-                  <CircularProgressbar value={convertCountToPercentage(item.count)} text={`${convertCountToPercentage(item.count)}%`} />
+                  <CircularProgressbar value={converseCountToPercentage(item.count)} text={`${converseCountToPercentage(item.count)}%`} />
                 </div>
               ))
             )
